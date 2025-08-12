@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo: Normalización de Datos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        section { display: none; animation: fadeIn 0.5s; }
+        section.active { display: block; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.98); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        .diagram-container {
+            min-height: 350px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <a href="index.html" class="absolute top-4 left-4 bg-gray-700 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all z-20">🏠 Inicio</a>
+    
+    <main class="w-full max-w-6xl mx-auto">
+        <!-- Slide 1: Título -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-emerald-400">
+                <h2 class="text-5xl font-black text-emerald-300 mb-4 tracking-tight">Normalización de Datos</h2>
+                <p class="text-2xl text-gray-300"><b>La Base de un Diseño de Datos Robusto</b></p>
+            </div>
+        </section>
+
+        <!-- Slide 2: Contexto -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-3xl font-bold text-emerald-300 mb-6">El Fundamento: Sistemas Transaccionales (OLTP)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-xl text-gray-300 mb-4">La normalización es la piedra angular del diseño de bases de datos para <b>sistemas transaccionales (OLTP)</b>.</p>
+                        <p class="text-lg text-gray-400">Piensa en ellos como la primera línea de tu negocio: cajas registradoras, formularios de registro, sistemas de inventario. Su prioridad absoluta es que los datos se escriban de forma <b>rápida, segura y sin errores</b>.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400 mt-4">
+                            <li><b>Objetivo:</b> Máxima integridad y cero redundancia.</li>
+                            <li><b>Técnica:</b> Aplicar las Formas Normales (1NF, 2NF, 3NF...).</li>
+                            <li><b>Resultado:</b> Datos consistentes en el sistema de origen.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-contexto" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: 1FN -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-3xl font-bold text-emerald-300 mb-6">1ª Forma Normal (1NF): Atomicidad</h2>
+                <div class="text-lg text-gray-400 mb-6 text-left max-w-4xl mx-auto space-y-3">
+                    <p>La regla es simple: cada celda de una tabla debe contener un <b>único valor</b> (atómico). No se permiten listas, arrays o conjuntos de valores en una sola celda.</p>
+                    <p><b>Anomalía de Actualización:</b> Si guardamos "Rojo, Verde" en una celda y queremos cambiar "Verde" por "Amarillo", necesitamos procesar el texto, lo cual es ineficiente y propenso a errores. Además, las búsquedas (`WHERE colores LIKE '%Verde%'`) son lentas y poco fiables.</p>
+                    <p><b>La solución</b> es dividir la información en tablas separadas, creando una tabla de enlace para manejar la relación de muchos a muchos, garantizando que cada pieza de información sea atómica.</p>
+                </div>
+                <div id="diagram-1nf" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+            </div>
+        </section>
+
+        <!-- Slide 4: 2FN -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-3xl font-bold text-emerald-300 mb-6">2ª Forma Normal (2NF): Sin Dependencias Parciales</h2>
+                <div class="text-lg text-gray-400 mb-6 text-left max-w-4xl mx-auto space-y-3">
+                    <p>Requiere 1NF. La regla es que todos los atributos que no son clave deben depender de la <b>clave primaria completa</b>. Es crucial en tablas con <b>llaves primarias compuestas</b>.</p>
+                    <p><b>Anomalía de Inserción:</b> No podemos registrar un nuevo producto y su precio si aún no ha sido parte de ninguna orden, ya que necesitaríamos un `orden_id` para completar la clave primaria.</p>
+                    <p><b>Anomalía de Eliminación:</b> Si eliminamos la única orden que contiene un producto, perderíamos también la información del precio de ese producto.</p>
+                </div>
+                <div id="diagram-2nf" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+            </div>
+        </section>
+
+        <!-- Slide 5: 3FN -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-3xl font-bold text-emerald-300 mb-6">3ª Forma Normal (3NF): Sin Dependencias Transitivas</h2>
+                <div class="text-lg text-gray-400 mb-6 text-left max-w-4xl mx-auto space-y-3">
+                    <p>Requiere 2NF. La regla es eliminar las <b>dependencias transitivas</b>: cuando un atributo no-clave depende de otro atributo no-clave.</p>
+                    <p><b>Anomalía de Actualización:</b> Si el nombre del departamento "Ventas" cambia a "Ventas Corporativas", habría que modificarlo en el registro de CADA empleado de ese departamento. Si olvidamos uno, los datos se vuelven inconsistentes.</p>
+                    <p><b>La solución</b> es mover el atributo dependiente (`Depto_Nombre`) a su propia tabla (`Departamentos`), donde existirá una sola vez.</p>
+                </div>
+                <div id="diagram-3nf" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+            </div>
+        </section>
+
+        <!-- Slide 6: BCNF -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-3xl font-bold text-emerald-300 mb-6">Forma Normal de Boyce-Codd (BCNF)</h2>
+                <div class="text-lg text-gray-400 mb-6 text-left max-w-4xl mx-auto space-y-3">
+                    <p>Es una versión más estricta de la 3NF. Una tabla está en BCNF si, para cada dependencia funcional `X -> Y`, `X` es una <b>superllave</b> (es decir, una clave candidata).</p>
+                    <p>Suele ser relevante en casos con <b>múltiples claves candidatas compuestas y superpuestas</b>. En el ejemplo, un estudiante puede tomar varias materias, y varios profesores pueden enseñar una materia, pero un profesor enseña una sola materia.</p>
+                    <p><b>El problema:</b> La dependencia `Profesor -> Materia` viola BCNF porque `Profesor` no es una clave candidata por sí solo. Esto puede llevar a redundancia si un profesor se asigna a la misma materia para diferentes estudiantes.</p>
+                </div>
+                <div id="diagram-bcnf" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+            </div>
+        </section>
+
+        <!-- Slide 7: El Gran Debate -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-emerald-400">
+                <h2 class="text-4xl font-bold text-emerald-300 mb-6">El Gran Debate: Normalización vs. Desnormalización</h2>
+                <p class="text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+                    Hemos visto que la normalización es clave para la <b>integridad</b>. Pero, ¿qué pasa cuando nuestra prioridad es la <b>velocidad de lectura</b> para análisis complejos?
+                    <br><br>
+                    Aquí es donde entra la <b>desnormalización</b>. Para los sistemas analíticos (OLAP), a menudo rompemos las reglas de normalización a propósito. Combinamos tablas y duplicamos datos de forma controlada para que las consultas sean extremadamente rápidas, evitando los costosos JOINS.
+                </p>
+            </div>
+        </section>
+
+        <!-- Slide 8: Comparación Final -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-emerald-400">
+                <h2 class="text-4xl font-bold text-emerald-300 mb-8 text-center">Comparación de Enfoques: OLTP vs. OLAP</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Sistemas Transaccionales (OLTP)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li><b>Objetivo:</b> Ejecutar operaciones diarias (INSERT, UPDATE, DELETE).</li>
+                            <li><b>Prioridad:</b> Integridad y consistencia de datos.</li>
+                            <li><b>Diseño:</b> Altamente <b>Normalizado</b> (3NF o superior).</li>
+                            <li>✅ Máxima integridad, sin redundancia.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Sistemas Analíticos (OLAP)</h3>
+                         <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li><b>Objetivo:</b> Analizar grandes volúmenes de datos (SELECT).</li>
+                            <li><b>Prioridad:</b> Velocidad y simplicidad de las consultas.</li>
+                            <li><b>Diseño:</b> Altamente <b>Desnormalizado</b> (Esquema de Estrella).</li>
+                            <li>⚡️ Consultas mucho más rápidas (menos JOINS).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div class="fixed bottom-8 flex space-x-4 z-10">
+        <button id="prevBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+        <button id="nextBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Siguiente</button>
+    </div>
+    
+    <script>
+        function drawTable(container, title, headers, data, options = {}) {
+            const { x = 0, y = 0, color = '#10b981' } = options;
+            const cellWidth = 120;
+            const cellHeight = 30;
+            const headerHeight = 40;
+            const tableWidth = headers.length * cellWidth;
+            const g = container.append('g').attr('transform', `translate(${x}, ${y})`);
+            g.append('text').text(title).attr('x', tableWidth / 2).attr('y', -20).attr('text-anchor', 'middle').attr('fill', 'white').style('font-weight', 'bold');
+            g.selectAll('.header-rect').data(headers).join('rect').attr('x', (d, i) => i * cellWidth).attr('y', 0).attr('width', cellWidth).attr('height', headerHeight).attr('fill', color).attr('stroke', '#4b5563');
+            g.selectAll('.header-text').data(headers).join('text').attr('x', (d, i) => i * cellWidth + cellWidth / 2).attr('y', headerHeight / 2).attr('text-anchor', 'middle').attr('dy', '0.3em').attr('fill', 'black').style('font-weight', 'bold').text(d => d);
+            const rows = g.selectAll('.row').data(data).join('g').attr('transform', (d, i) => `translate(0, ${headerHeight + i * cellHeight})`);
+            rows.selectAll('.cell-rect').data(d => d).join('rect').attr('x', (d, i) => i * cellWidth).attr('y', 0).attr('width', cellWidth).attr('height', cellHeight).attr('fill', '#374151').attr('stroke', '#4b5563');
+            rows.selectAll('.cell-text').data(d => d).join('text').attr('x', (d, i) => i * cellWidth + cellWidth / 2).attr('y', cellHeight / 2).attr('text-anchor', 'middle').attr('dy', '0.3em').attr('fill', 'white').text(d => d);
+        }
+
+        function drawContextoDiagram() {
+            const svg = d3.select("#diagram-contexto").append("svg").attr("viewBox", `0 0 650 250`);
+            drawTable(svg, 'OLTP (Aplicaciones)', ['ID', 'Dato'], [['1', 'Valor A']], {x: 20, y: 80, color: '#3b82f6'});
+            drawTable(svg, 'OLAP (Análisis)', ['ID', 'Dato', 'Dimensión'], [['1', 'Valor A', 'Cat 1']], {x: 350, y: 80, color: '#f97316'});
+            svg.append('line').attr('x1', 260).attr('y1', 150).attr('x2', 350).attr('y2', 150).attr('stroke', 'white').attr('stroke-width', 2).attr('marker-end', 'url(#arrow)');
+            svg.append('text').text('ETL').attr('x', 305).attr('y', 145).attr('text-anchor', 'middle').attr('fill', 'white');
+            svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 -5 10 10').attr('refX', 5).attr('refY', 0).attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto').append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', 'white');
+        }
+
+        function draw1NFDiagram() {
+            const svg = d3.select("#diagram-1nf").append("svg").attr("viewBox", `0 0 800 350`);
+            svg.append('text').text('ANTES').attr('x', 200).attr('y', 30).attr('fill', '#f87171').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Productos', ['ID', 'Nombre', 'Colores'], [['1', 'Camiseta', 'Rojo, Verde']], {x: 20, y: 82, color: '#ef4444'});
+            svg.append('text').text('DESPUÉS').attr('x', 580).attr('y', 30).attr('fill', '#4ade80').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Productos', ['ID', 'Nombre'], [['1', 'Camiseta']], {x: 460, y: 80});
+            drawTable(svg, 'Producto_Colores', ['prod_id', 'color'], [['1', 'Rojo'], ['1', 'Verde']], {x: 460, y: 220});
+        }
+        
+        function draw2NFDiagram() {
+            const svg = d3.select("#diagram-2nf").append("svg").attr("viewBox", `0 0 800 350`);
+            svg.append('text').text('ANTES').attr('x', 200).attr('y', 30).attr('fill', '#f87171').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Orden_Detalle (PK: orden, prod)', ['orden_id', 'prod_id', 'precio_prod'], [['101', '50', '19.99']], {x: 20, y: 82, color: '#ef4444'});
+            svg.append('text').text('DESPUÉS').attr('x', 580).attr('y', 30).attr('fill', '#4ade80').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Productos', ['ID', 'Precio'], [['50', '19.99']], {x: 460, y: 80});
+            drawTable(svg, 'Orden_Detalle', ['orden_id', 'prod_id'], [['101', '50']], {x: 460, y: 220});
+        }
+
+        function draw3NFDiagram() {
+            const svg = d3.select("#diagram-3nf").append("svg").attr("viewBox", `0 0 950 350`);
+            svg.append('text').text('ANTES').attr('x', 260).attr('y', 30).attr('fill', '#f87171').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Empleados', ['ID', 'Nombre', 'Depto_ID', 'Depto_Nombre'], [['1', 'Ana', '10', 'Ventas']], {x: 20, y: 82, color: '#ef4444'});
+            svg.append('text').text('DESPUÉS').attr('x', 680).attr('y', 30).attr('fill', '#4ade80').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Departamentos', ['ID', 'Nombre'], [['10', 'Ventas']], {x: 560, y: 80});
+            drawTable(svg, 'Empleados', ['ID', 'Nombre', 'Depto_ID'], [['1', 'Ana', '10']], {x: 500, y: 220});
+        }
+
+        function drawBCNFDiagram() {
+            const svg = d3.select("#diagram-bcnf").append("svg").attr("viewBox", `0 0 950 350`);
+            svg.append('text').text('ANTES (Viola BCNF)').attr('x', 260).attr('y', 30).attr('fill', '#f87171').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Inscripciones (PK: Est, Mat)', ['Estudiante', 'Materia', 'Profesor'], [['Ana', 'SQL', 'García'], ['Juan', 'Python', 'Pérez'], ['Ana', 'Python', 'Pérez']], {x: 20, y: 82, color: '#ef4444'});
+            svg.append('text').text('DESPUÉS').attr('x', 740).attr('y', 30).attr('fill', '#4ade80').style('font-size', '20px').attr('text-anchor', 'middle');
+            drawTable(svg, 'Asignaciones', ['Profesor', 'Materia'], [['García', 'SQL'], ['Pérez', 'Python']], {x: 560, y: 80});
+            drawTable(svg, 'Cursadas', ['Estudiante', 'Profesor'], [['Ana', 'García'], ['Juan', 'Pérez'], ['Ana', 'Pérez']], {x: 560, y: 220});
+        }
+
+        const slides = document.querySelectorAll('main > section'); 
+        let currentSlide = 0;
+        const prevBtn = document.getElementById('prevBtn'); 
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function drawVisibleDiagram() {
+            const activeSlide = slides[currentSlide];
+            if (!activeSlide) return;
+            const container = activeSlide.querySelector('.diagram-container');
+            if (!container) return;
+            d3.select(container).select("svg").remove();
+            const containerId = container.id;
+
+            switch(containerId) {
+                case 'diagram-contexto': drawContextoDiagram(); break;
+                case 'diagram-1nf': draw1NFDiagram(); break;
+                case 'diagram-2nf': draw2NFDiagram(); break;
+                case 'diagram-3nf': draw3NFDiagram(); break;
+                case 'diagram-bcnf': drawBCNFDiagram(); break;
+            }
+        }
+
+        function showSlide(index) { 
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index)); 
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            nextBtn.disabled = index === slides.length - 1;
+            nextBtn.classList.toggle('opacity-50', index === slides.length - 1);
+            drawVisibleDiagram();
+        }
+        
+        prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; showSlide(currentSlide); } });
+        nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; showSlide(currentSlide); } });
+        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextBtn.click(); else if (e.key === 'ArrowLeft') prevBtn.click(); });
+        
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

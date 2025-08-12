@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo: Llaves de Base de Datos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        section { display: none; animation: fadeIn 0.5s; }
+        section.active { display: block; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.98); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        .diagram-container {
+            min-height: 350px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <a href="index.html" class="absolute top-4 left-4 bg-gray-700 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all z-20">🏠 Inicio</a>
+    
+    <main class="w-full max-w-6xl mx-auto">
+        <!-- Slide 1: Título -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-yellow-400">
+                <h2 class="text-5xl font-black text-yellow-300 mb-4 tracking-tight">El Universo de las Llaves</h2>
+                <p class="text-2xl text-gray-300"><b>Garantizando la Integridad y las Relaciones</b></p>
+            </div>
+        </section>
+
+        <!-- Slide 2: Llave Primaria -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">1. Llave Primaria (Primary Key - PK)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Es la columna (o conjunto de columnas) que <b>identifica de forma única</b> cada fila en una tabla.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Reglas de Oro:</b> No puede contener valores NULOS (`NOT NULL`) y sus valores deben ser únicos (`UNIQUE`).</li>
+                            <li>Una tabla solo puede tener una Llave Primaria.</li>
+                            <li>Es el pilar sobre el que se construyen las relaciones y los índices.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-pk" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Llaves Candidatas y Alternas -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">2. Llaves Candidatas y Alternas</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Antes de elegir una PK, a menudo existen varias opciones válidas.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Una <b>Llave Candidata</b> es cualquier columna o conjunto de columnas que podría ser la PK (es única y no nula).</li>
+                            <li>Una tabla puede tener varias llaves candidatas.</li>
+                            <li>Se elige una para ser la PK. Las demás se convierten en <b>Llaves Alternas</b>, y se les suele aplicar una restricción `UNIQUE`.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-candidate" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Natural vs. Subrogada -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">El Debate: Llaves Naturales vs. Subrogadas</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Llave Natural</h3>
+                        <p class="text-gray-400 mb-3">Un dato del mundo real (DNI, Email, ISBN).</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li><b>Pro:</b> Intuitivo, tiene significado de negocio.</li>
+                            <li><b>Contra:</b> ¡Puede cambiar! (un email), puede ser complejo (múltiples columnas), puede no ser 100% único.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Llave Subrogada (Artificial)</h3>
+                        <p class="text-gray-400 mb-3">Un ID numérico sin significado de negocio.</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li><b>Pro:</b> Estable (nunca cambia), simple (un entero), rendimiento óptimo en JOINS.</li>
+                            <li><b>Contra:</b> Requiere un JOIN para ver datos significativos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-center text-cyan-300 font-bold mt-6 text-xl">Veredicto: Las llaves subrogadas son la opción preferida en la mayoría de los diseños modernos por su estabilidad.</p>
+            </div>
+        </section>
+
+        <!-- Slide 5: Llave Foránea -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">3. Llave Foránea (Foreign Key - FK)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Es una columna que apunta a la <b>Llave Primaria</b> de otra tabla. Es el pilar de la <b>integridad referencial</b>.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Propósito:</b> Asegura que un valor en la tabla "hija" exista en la tabla "padre".</li>
+                            <li><b>Acciones Referenciales (`ON DELETE`):</b>
+                                <ul>
+                                    <li>`RESTRICT`: Impide eliminar al padre si tiene hijos (defecto).</li>
+                                    <li>`CASCADE`: Si se elimina al padre, se eliminan los hijos.</li>
+                                    <li>`SET NULL`: Si se elimina al padre, la FK de los hijos se pone a NULO.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="diagram-fk" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Llave Única -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">4. Llave Única (Unique Key)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Asegura que todos los valores en una columna sean únicos, al igual que una PK.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Diferencia Clave con la PK:</b> Puede permitir <b>un valor NULO</b> (en la mayoría de los motores de BD).</li>
+                            <li>Una tabla puede tener múltiples restricciones `UNIQUE`, pero solo una `PRIMARY KEY`.</li>
+                            <li><b>Caso de Uso:</b> Para Llaves Alternas (ej. email, DNI) cuando la PK es un ID subrogado.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-unique" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Llave Compuesta -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">5. Llave Compuesta (Composite Key)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Es una llave primaria formada por <b>dos o más columnas</b>. La combinación de los valores de estas columnas debe ser única para cada fila.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Uso Principal:</b> En <b>tablas de unión</b> que resuelven relaciones de muchos a muchos (N:M).</li>
+                            <li>En el ejemplo, la combinación de `estudiante_id` y `curso_id` es única. Un estudiante no puede inscribirse dos veces en el mismo curso.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-composite" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Importancia para la Analítica -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-3xl font-bold text-yellow-300 mb-6">¿Por Qué es Crucial para la Analítica?</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Para un <b>Analista o Científico de Datos</b>, entender las llaves del sistema de origen (OLTP) es fundamental, aunque trabaje con modelos desnormalizados (OLAP).</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>La Base de los `JOIN`s:</b> Un `JOIN` incorrecto por no entender una relación PK-FK puede duplicar o perder datos, <b>invalidando cualquier análisis</b>.</li>
+                            <li><b>Garantía de Calidad:</b> Las llaves aseguran la integridad de los datos en el origen. El analista debe confiar en que los datos que consume son consistentes gracias a estas reglas.</li>
+                            <li><b>Entendimiento del Negocio:</b> Las relaciones definidas por las llaves modelan las reglas del negocio. Entenderlas es entender cómo funciona la empresa.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-analytics" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div class="fixed bottom-8 flex space-x-4 z-10">
+        <button id="prevBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+        <button id="nextBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Siguiente</button>
+    </div>
+    
+    <script>
+        function drawTable(container, title, headers, data, options = {}) {
+            const { x = 0, y = 0, color = '#f59e0b', pkColumns = [], uniqueColumns = [] } = options;
+            const cellWidth = 100;
+            const cellHeight = 30;
+            const headerHeight = 40;
+            const tableWidth = headers.length * cellWidth;
+            const g = container.append('g').attr('transform', `translate(${x}, ${y})`);
+
+            g.append('text').text(title).attr('x', tableWidth / 2).attr('y', -20).attr('text-anchor', 'middle').attr('fill', 'white').style('font-weight', 'bold');
+
+            const header = g.selectAll('.header-group').data(headers).join('g')
+                .attr('transform', (d, i) => `translate(${i * cellWidth}, 0)`);
+
+            header.append('rect').attr('width', cellWidth).attr('height', headerHeight)
+                .attr('fill', d => pkColumns.includes(d) ? '#dc2626' : (uniqueColumns.includes(d) ? '#6366f1' : color))
+                .attr('stroke', '#4b5563');
+            
+            header.append('text').attr('x', cellWidth / 2).attr('y', headerHeight / 2)
+                .attr('text-anchor', 'middle').attr('dy', '0.3em').attr('fill', pkColumns.includes(headers[0]) ? 'white' : 'black').style('font-weight', 'bold')
+                .text(d => d);
+
+            const rows = g.selectAll('.row').data(data).join('g')
+                .attr('transform', (d, i) => `translate(0, ${headerHeight + i * cellHeight})`);
+
+            rows.selectAll('.cell-rect').data(d => d).join('rect')
+                .attr('x', (d, i) => i * cellWidth).attr('y', 0)
+                .attr('width', cellWidth).attr('height', cellHeight)
+                .attr('fill', '#374151').attr('stroke', '#4b5563');
+            
+            rows.selectAll('.cell-text').data(d => d).join('text')
+                .attr('x', (d, i) => i * cellWidth + cellWidth / 2).attr('y', cellHeight / 2)
+                .attr('text-anchor', 'middle').attr('dy', '0.3em').attr('fill', 'white')
+                .text(d => d);
+        }
+
+        function drawForceDirectedGraph(containerId, nodes, links, width = 400, height = 300) {
+            d3.select(containerId).select("svg").remove();
+            const svg = d3.select(containerId).append("svg").attr("width", "100%").attr("height", "100%").attr("viewBox", `0 0 ${width} ${height}`);
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.distance || 120))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+            
+            const link = svg.append("g")
+                .attr("stroke-opacity", 0.8)
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("stroke-width", 3)
+                .attr("stroke", d => d.color || "#9ca3af");
+
+            const node = svg.append("g").selectAll("g").data(nodes).join("g");
+            node.append("circle").attr("r", d => d.radius || 25).attr("fill", d => d.color || "#3b82f6").attr("stroke", "#fff").attr("stroke-width", 1.5);
+            node.append("text").attr("text-anchor", "middle").attr("dy", "0.3em").attr("fill", "white").style("font-size", "12px").text(d => d.id);
+            simulation.on("tick", () => {
+                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        }
+
+        function drawPKDiagram() {
+            const svg = d3.select("#diagram-pk").append("svg").attr("viewBox", `0 0 400 250`);
+            drawTable(svg, 'Usuarios', ['ID', 'Nombre', 'Email'], [['1', 'Ana', 'a@a.com'], ['2', 'Juan', 'b@b.com']], {x: 50, y: 80, pkColumns: ['ID']});
+        }
+        
+        function drawCandidateDiagram() {
+            const svg = d3.select("#diagram-candidate").append("svg").attr("viewBox", `0 0 400 250`);
+            drawTable(svg, 'Usuarios', ['ID', 'DNI', 'Email'], [['1', '123A', 'a@a.com'], ['2', '456B', 'b@b.com']], {x: 50, y: 80, pkColumns: ['ID'], uniqueColumns: ['DNI', 'Email']});
+        }
+
+        function drawFKDiagram() {
+            const svg = d3.select("#diagram-fk").append("svg").attr("viewBox", `0 0 600 300`);
+            drawTable(svg, 'Clientes', ['ID', 'Nombre'], [['10', 'Empresa A'], ['20', 'Empresa B']], {x: 0, y: 80, pkColumns: ['ID']});
+            drawTable(svg, 'Pedidos', ['Pedido_ID', 'Fecha', 'Cliente_ID'], [['101', '2024-01-15', '10'], ['102', '2024-01-16', '20']], {x: 280, y: 80, pkColumns: ['Pedido_ID']});
+            svg.append('path').attr('d', 'M 200 145 C 250 145, 250 145, 280 145').attr('stroke', '#f59e0b').attr('stroke-width', 2).attr('fill', 'none').attr('marker-end', 'url(#arrow)');
+            svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 -5 10 10').attr('refX', 5).attr('refY', 0).attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto').append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#f59e0b');
+        }
+
+        function drawUniqueDiagram() {
+            const svg = d3.select("#diagram-unique").append("svg").attr("viewBox", `0 0 400 250`);
+            drawTable(svg, 'Usuarios', ['ID', 'Email', 'Nombre'], [['1', 'a@a.com', 'Ana'], ['2', 'b@b.com', 'Juan']], {x: 50, y: 80, pkColumns: ['ID'], uniqueColumns: ['Email']});
+        }
+
+        function drawCompositeDiagram() {
+            const svg = d3.select("#diagram-composite").append("svg").attr("viewBox", `0 0 400 250`);
+            drawTable(svg, 'Inscripciones', ['estudiante_id', 'curso_id', 'fecha'], [['1', '101', '2024-01-10'], ['1', '102', '2024-01-11'], ['2', '101', '2024-01-12']], {x: 20, y: 80, pkColumns: ['estudiante_id', 'curso_id']});
+        }
+        
+        function drawAnalyticsDiagram() {
+            const nodes = [ { id: "OLTP", radius: 30 }, { id: "Analista", radius: 35 }, { id: "JOIN", radius: 25, color: "#6366f1" }, { id: "Resultado Confiable", radius: 40, color: "#10b981" }, { id: "Resultado Erróneo", radius: 40, color: "#ef4444" } ];
+            const links = [ { source: "OLTP", target: "Analista" }, { source: "Analista", target: "JOIN" }, { source: "JOIN", target: "Resultado Confiable" }, { source: "JOIN", target: "Resultado Erróneo" } ];
+            drawForceDirectedGraph("#diagram-analytics", nodes, links);
+        }
+
+        const slides = document.querySelectorAll('main > section'); 
+        let currentSlide = 0;
+        const prevBtn = document.getElementById('prevBtn'); 
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function drawVisibleDiagram() {
+            const activeSlide = slides[currentSlide];
+            if (!activeSlide) return;
+            const container = activeSlide.querySelector('.diagram-container');
+            if (!container) return;
+            d3.select(container).select("svg").remove();
+            const containerId = container.id;
+
+            switch(containerId) {
+                case 'diagram-pk': drawPKDiagram(); break;
+                case 'diagram-candidate': drawCandidateDiagram(); break;
+                case 'diagram-fk': drawFKDiagram(); break;
+                case 'diagram-unique': drawUniqueDiagram(); break;
+                case 'diagram-composite': drawCompositeDiagram(); break;
+                case 'diagram-analytics': drawAnalyticsDiagram(); break;
+            }
+        }
+
+        function showSlide(index) { 
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index)); 
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            nextBtn.disabled = index === slides.length - 1;
+            nextBtn.classList.toggle('opacity-50', index === slides.length - 1);
+            drawVisibleDiagram();
+        }
+        
+        prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; showSlide(currentSlide); } });
+        nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; showSlide(currentSlide); } });
+        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextBtn.click(); else if (e.key === 'ArrowLeft') prevBtn.click(); });
+        
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

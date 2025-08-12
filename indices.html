@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo: Índices de Base de Datos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        section { display: none; animation: fadeIn 0.5s; }
+        section.active { display: block; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.98); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        .diagram-container {
+            min-height: 350px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <a href="index.html" class="absolute top-4 left-4 bg-gray-700 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all z-20">🏠 Inicio</a>
+    
+    <main class="w-full max-w-6xl mx-auto">
+        <!-- Slide 1: Título -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-purple-400">
+                <h2 class="text-5xl font-black text-purple-300 mb-4 tracking-tight">Índices: El Secreto del Rendimiento</h2>
+                <p class="text-2xl text-gray-300"><b>Cómo hacer que tus consultas vuelen</b></p>
+            </div>
+        </section>
+
+        <!-- Slide 2: Analogía -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-purple-400">
+                <h2 class="text-3xl font-bold text-purple-300 mb-6">La Analogía Perfecta: El Índice de un Libro</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-xl text-gray-300 mb-4">Imagina que buscas un capítulo específico en un libro de 500 páginas.</p>
+                        <ul class="list-disc list-inside space-y-4 text-lg text-gray-400">
+                            <li><b>Sin índice:</b> Tendrías que leer página por página desde el principio hasta encontrar lo que buscas. Esto es un <b>Full Table Scan</b> en una base de datos.</li>
+                            <li><b>Con índice:</b> Vas al índice al final del libro, buscas el capítulo, ves el número de página y vas directamente a ella. Esto es un <b>Index Seek</b>.</li>
+                        </ul>
+                        <p class="text-cyan-300 font-bold mt-6 text-xl">Un índice es una estructura de datos que permite a la base de datos encontrar filas de forma extremadamente rápida.</p>
+                    </div>
+                    <div id="diagram-analogy" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Cómo funciona un Índice (B-Tree) -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-purple-400">
+                <h2 class="text-3xl font-bold text-purple-300 mb-6">¿Cómo Funciona un Índice? La Estructura B-Tree</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">La mayoría de los índices en bases de datos relacionales usan una estructura de datos llamada <b>B-Tree (Árbol B)</b>.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                           <li>Es una estructura de árbol auto-balanceada que mantiene los datos ordenados.</li>
+                           <li>Permite búsquedas, inserciones y eliminaciones en tiempo logarítmico (muy rápido).</li>
+                           <li>La base de datos navega el árbol desde la raíz hasta las hojas para encontrar la ubicación exacta de la fila en el disco.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-btree" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Clustered vs Non-Clustered -->
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-purple-400">
+                <h2 class="text-3xl font-bold text-purple-300 mb-6">Tipos de Índices: Clustered vs. Non-Clustered</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Índice Agrupado (Clustered)</h3>
+                        <p class="text-gray-400 mb-3">El índice <b>ES</b> la tabla. Los datos de la tabla están físicamente ordenados en el disco según la columna del índice.</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li>Solo puede haber <b>uno por tabla</b>.</li>
+                            <li>Generalmente se crea en la Llave Primaria.</li>
+                            <li>Extremadamente rápido para búsquedas por rango.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-white mb-3">Índice No Agrupado (Non-Clustered)</h3>
+                        <p class="text-gray-400 mb-3">Es una estructura <b>separada</b> de la tabla. Contiene la columna del índice y un puntero a la fila de datos real.</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li>Puede haber <b>muchos por tabla</b>.</li>
+                            <li>La tabla (heap) no tiene un orden físico.</li>
+                            <li>Requiere un paso extra (buscar en el índice y luego ir a la tabla).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: El Costo Oculto -->
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-purple-400">
+                <h2 class="text-3xl font-bold text-red-400 mb-6">El Costo Oculto de los Índices</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Los índices son fantásticos para las lecturas (`SELECT`), pero tienen un costo en las operaciones de escritura.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                           <li><b>`INSERT` / `UPDATE` / `DELETE`:</b> Cada vez que modificas una fila, la base de datos no solo debe modificar la tabla, sino también <b>actualizar cada índice</b> afectado para mantenerlo ordenado.</li>
+                           <li><b>Espacio en Disco:</b> Cada índice es una estructura de datos adicional que ocupa espacio.</li>
+                        </ul>
+                        <p class="text-yellow-300 font-bold mt-6 text-xl">Conclusión: No se deben crear índices a la ligera. Hay que tener una estrategia.</p>
+                    </div>
+                    <div id="diagram-cost" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Estrategia de Indexación -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-purple-400">
+                <h2 class="text-4xl font-bold text-purple-300 mb-8 text-center">Estrategia: ¿Cuándo Crear un Índice?</h2>
+                <ul class="space-y-6 text-xl max-w-3xl mx-auto">
+                    <li class="flex items-start"><span class="text-purple-400 font-bold mr-4 text-2xl">1️⃣</span><div><h3 class="font-bold text-white">Columnas en la Cláusula `WHERE`</h3><p class="text-gray-400 mt-1">Es el caso de uso más importante. Indexa las columnas que usas frecuentemente para filtrar datos.</p></div></li>
+                    <li class="flex items-start"><span class="text-purple-400 font-bold mr-4 text-2xl">2️⃣</span><div><h3 class="font-bold text-white">Columnas en `JOIN`s</h3><p class="text-gray-400 mt-1">Las llaves foráneas son candidatas perfectas para un índice. Acelera drásticamente la unión de tablas.</p></div></li>
+                    <li class="flex items-start"><span class="text-purple-400 font-bold mr-4 text-2xl">3️⃣</span><div><h3 class="font-bold text-white">Columnas en `ORDER BY`</h3><p class="text-gray-400 mt-1">Si ordenas frecuentemente por una columna, un índice puede evitar una costosa operación de ordenamiento en memoria.</p></div></li>
+                    <li class="flex items-start"><span class="text-purple-400 font-bold mr-4 text-2xl">⚠️</span><div><h3 class="font-bold text-white">Cuidado con...</h3><p class="text-gray-400 mt-1">Columnas de baja cardinalidad (pocos valores únicos, como 'Género') o tablas muy pequeñas.</p></div></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    
+    <div class="fixed bottom-8 flex space-x-4 z-10">
+        <button id="prevBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+        <button id="nextBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Siguiente</button>
+    </div>
+    
+    <script>
+        function drawForceDirectedGraph(containerId, nodesData, linksData, width = 400, height = 300) {
+            // 1. Clear any previous SVG
+            d3.select(containerId).select("svg").remove();
+
+            // 2. Create the SVG container
+            const svg = d3.select(containerId)
+                .append("svg")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .style("width", "100%")
+                .style("height", "100%");
+
+            // 3. Create a simulation
+            const simulation = d3.forceSimulation(nodesData)
+                .force("link", d3.forceLink(linksData).id(d => d.id).distance(d => d.distance || 90))
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            // 4. Draw the links (lines)
+            const link = svg.append("g")
+                .attr("stroke", "#9ca3af")
+                .attr("stroke-opacity", 0.6)
+                .selectAll("line")
+                .data(linksData)
+                .join("line")
+                .attr("stroke-width", 2);
+
+            // 5. Draw the nodes (circles and text)
+            const node = svg.append("g")
+                .selectAll("g")
+                .data(nodesData)
+                .join("g");
+
+            node.append("circle")
+                .attr("r", d => d.radius || 20)
+                .attr("fill", d => d.color || "#a78bfa")
+                .attr("stroke", "#111827")
+                .attr("stroke-width", 2);
+
+            node.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.3em")
+                .attr("fill", "white")
+                .style("font-size", "11px")
+                .style("pointer-events", "none")
+                .text(d => d.id);
+
+            // 6. Define what happens on each 'tick' of the simulation
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+                node
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        }
+
+        const analogyNodes = [ { id: "Libro", radius: 30 }, { id: "Índice", color: "#6366f1" }, { id: "Página 250", color: "#10b981" } ];
+        const analogyLinks = [ { source: "Libro", target: "Índice" }, { source: "Índice", target: "Página 250" } ];
+
+        const btreeNodes = [ { id: "Raíz", radius: 25, color: "#8b5cf6" }, { id: "Nivel 1A" }, { id: "Nivel 1B" }, { id: "Hoja 1" }, { id: "Hoja 2" }, { id: "Hoja 3" }, { id: "Hoja 4" } ];
+        const btreeLinks = [ { source: "Raíz", target: "Nivel 1A" }, { source: "Raíz", target: "Nivel 1B" }, { source: "Nivel 1A", target: "Hoja 1" }, { source: "Nivel 1A", target: "Hoja 2" }, { source: "Nivel 1B", target: "Hoja 3" }, { source: "Nivel 1B", target: "Hoja 4" } ];
+
+        const costNodes = [ { id: "UPDATE", radius: 30, color: "#ef4444" }, { id: "Tabla" }, { id: "Índice 1" }, { id: "Índice 2" }, { id: "Índice 3" } ];
+        const costLinks = [ { source: "UPDATE", target: "Tabla" }, { source: "UPDATE", target: "Índice 1" }, { source: "UPDATE", target: "Índice 2" }, { source: "UPDATE", target: "Índice 3" } ];
+
+        const slides = document.querySelectorAll('main > section'); 
+        let currentSlide = 0;
+        const prevBtn = document.getElementById('prevBtn'); 
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function drawVisibleDiagram() {
+            const activeSlide = slides[currentSlide];
+            if (!activeSlide) return;
+            const container = activeSlide.querySelector('.diagram-container');
+            if (!container) return;
+            const containerId = `#${container.id}`;
+
+            switch(containerId) {
+                case '#diagram-analogy': drawForceDirectedGraph(containerId, analogyNodes, analogyLinks); break;
+                case '#diagram-btree': drawForceDirectedGraph(containerId, btreeNodes, btreeLinks); break;
+                case '#diagram-cost': drawForceDirectedGraph(containerId, costNodes, costLinks); break;
+            }
+        }
+
+        function showSlide(index) { 
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index)); 
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            nextBtn.disabled = index === slides.length - 1;
+            nextBtn.classList.toggle('opacity-50', index === slides.length - 1);
+            drawVisibleDiagram();
+        }
+        
+        prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; showSlide(currentSlide); } });
+        nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; showSlide(currentSlide); } });
+        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextBtn.click(); else if (e.key === 'ArrowLeft') prevBtn.click(); });
+        
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

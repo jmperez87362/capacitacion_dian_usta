@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso Completo: Arquitecturas de Datos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        section { display: none; animation: fadeIn 0.5s; }
+        section.active { display: block; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.98); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        .diagram-container {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <main class="w-full max-w-6xl mx-auto">
+        <!-- === MÓDULO DE INTRODUCCIÓN === -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-cyan-400">
+                <h1 class="text-5xl font-black text-cyan-300 mb-4 tracking-tight">Refuerzo de Diseño Relacional</h1>
+                <p class="text-2xl text-gray-300"><b>Arquitecturas de Datos Modernas</b></p>
+                <div class="mt-8 border-t border-gray-700 pt-6"><p class="text-lg text-gray-400">Curso de SQL Avanzado</p></div>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
+                <h2 class="text-4xl font-bold text-cyan-300 mb-6 text-center">El Corazón de tus Aplicaciones</h2>
+                <p class="text-xl text-gray-300 leading-relaxed">Toda gran aplicación se apoya en una base de datos. Es el motor silencioso que guarda, protege y sirve la información.<br><br>Un motor <b class="text-red-400">mal diseñado</b> genera fricción: lentitud y errores. Un motor <b class="text-green-400">bien diseñado</b> es sinónimo de eficiencia y confianza.</p>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
+                <h2 class="text-4xl font-bold text-cyan-300 mb-6 text-center">De SQL a Arquitectura de Datos</h2>
+                <p class="text-xl text-gray-300 leading-relaxed">Saber escribir consultas es fundamental. Pero en un nivel <b class="text-white">avanzado</b>, debemos ir más allá. No solo se trata de <i>preguntar</i> por los datos, sino de <i>estructurarlos</i> de la mejor manera.<br><br>En esta clase, aprenderás a pensar como un <b class="text-cyan-300">arquitecto de datos</b>.</p>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
+                <h2 class="text-4xl font-bold text-cyan-300 mb-8 text-center">Lo que Lograrás en esta Sesión</h2>
+                <ul class="space-y-6 text-xl">
+                    <li class="flex items-start"><span class="text-cyan-400 font-bold mr-4 text-2xl">🔎</span><div><h3 class="text-white"><b>Diagnosticar Problemas</b></h3><p class="text-gray-400 mt-1">Identificarás fallos de diseño que causan problemas de rendimiento e integridad.</p></div></li>
+                    <li class="flex items-start"><span class="text-cyan-400 font-bold mr-4 text-2xl">💡</span><div><h3 class="text-white"><b>Proponer Soluciones</b></h3><p class="text-gray-400 mt-1">Aprenderás a refactorizar un esquema para hacerlo más robusto y eficiente.</p></div></li>
+                    <li class="flex items-start"><span class="text-cyan-400 font-bold mr-4 text-2xl">🧠</span><div><h3 class="text-white"><b>Pensar Estratégicamente</b></h3><p class="text-gray-400 mt-1">Entenderás el impacto de cada decisión de diseño en el futuro de una aplicación.</p></div></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- === MÓDULO ARQUITECTURA SQL === -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-indigo-400">
+                <h2 class="text-5xl font-black text-indigo-300 mb-4 tracking-tight">Arquitecturas SQL y Analíticas</h2>
+                <p class="text-2xl text-gray-300"><b>Modelos para Estructurar el Data Warehouse</b></p>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-indigo-400">
+                <h2 class="text-3xl font-bold text-indigo-300 mb-6">Modelo 1: Dimensional (Kimball)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Enfoque <i>bottom-up</i>. Optimizado para <b>facilidad de consulta y rendimiento</b> en el análisis.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Se construyen <b>Data Marts</b> por área de negocio.</li>
+                            <li>Usa el famoso <b>Esquema de Estrella</b>.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-kimball" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-indigo-400">
+                <h2 class="text-3xl font-bold text-indigo-300 mb-6">Modelo 2: Corporate Information Factory (Inmon)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Enfoque <i>top-down</i>. Prioriza la <b>integración y la consistencia</b> de los datos a nivel empresarial.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Se crea un <b>Data Warehouse centralizado y normalizado (3NF)</b>.</li>
+                            <li>Busca ser la "única fuente de la verdad".</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-inmon" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-indigo-400">
+                <h2 class="text-3xl font-bold text-indigo-300 mb-6">Modelo 3: Data Vault 2.0</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Un híbrido diseñado para ser <b>ágil, escalable y auditable</b>. Ideal para Data Lakes y entornos con muchas fuentes de datos.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Componentes: <b>Hubs</b>, <b>Links</b> y <b>Satellites</b>.</li>
+                        </ul>
+                    </div>
+                     <div id="diagram-datavault" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-indigo-400">
+                <h2 class="text-3xl font-bold text-indigo-300 mb-6">Modelo 4: One Big Table (OBT)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Un enfoque radicalmente <b>desnormalizado</b>, popular en plataformas de Cloud Data Warehouse.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Consiste en una única tabla ancha para un caso de uso.</li>
+                            <li>Ideal para dashboards de BI o modelos de Machine Learning.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-obt" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-indigo-400">
+                <h2 class="text-3xl font-bold text-indigo-300 mb-6">Modelo 5: Data Mesh</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Más que un modelo, es una <b>filosofía socio-técnica</b>. Trata los datos como un producto.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Se basa en la <b>descentralización</b> y la propiedad de los datos por dominio de negocio.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-datamesh" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === MÓDULO ARQUITECTURA NOSQL === -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-teal-400">
+                <h2 class="text-5xl font-black text-teal-300 mb-4 tracking-tight">Arquitecturas No Relacionales</h2>
+                <p class="text-2xl text-gray-300"><b>El Mundo Más Allá de las Tablas (NoSQL)</b></p>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-teal-400">
+                <h2 class="text-3xl font-bold text-teal-300 mb-6">¿Qué es NoSQL?</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-xl text-gray-300 mb-4">"No solo SQL" es una categoría de bases de datos que no utiliza el modelo relacional de tablas, filas y columnas.</p>
+                        <p class="text-lg text-gray-400">Nacieron por la necesidad de manejar problemas que el modelo relacional no resolvía eficientemente:</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400 mt-4">
+                            <li><b>Big Data</b></li><li><b>Escalabilidad Horizontal</b></li><li><b>Flexibilidad</b></li>
+                        </ul>
+                    </div>
+                    <div id="diagram-nosql-intro" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-teal-400">
+                <h2 class="text-3xl font-bold text-teal-300 mb-6">Tipo 1: Documental (ej. MongoDB)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Almacena datos en documentos flexibles, similares a JSON.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Fortaleza:</b> Flexibilidad de esquema.</li>
+                            <li><b>Ideal para:</b> Catálogos, perfiles de usuario, CMS.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-documental" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-teal-400">
+                <h2 class="text-3xl font-bold text-teal-300 mb-6">Tipo 2: Clave-Valor (ej. Redis)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">El modelo más simple. Almacena datos como un gran diccionario.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Fortaleza:</b> Velocidad extrema y simplicidad.</li>
+                            <li><b>Ideal para:</b> Caché, sesiones de usuario, contadores.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-keyvalue" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-teal-400">
+                <h2 class="text-3xl font-bold text-teal-300 mb-6">Tipo 3: Columnar (ej. Cassandra)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Almacena los datos en columnas en lugar de filas.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Fortaleza:</b> Escritura rápida y escalabilidad masiva.</li>
+                            <li><b>Ideal para:</b> Big Data, analítica, series temporales, IoT.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-columnar" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-teal-400">
+                <h2 class="text-3xl font-bold text-teal-300 mb-6">Tipo 4: Grafo (ej. Neo4j)</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Diseñadas para almacenar y navegar relaciones complejas.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Fortaleza:</b> Rendimiento excepcional en consultas de relaciones.</li>
+                            <li><b>Ideal para:</b> Redes sociales, recomendaciones, detección de fraude.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-graph" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- === MÓDULO COMPARACIONES === -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-sky-400">
+                <h2 class="text-5xl font-black text-sky-300 mb-4 tracking-tight">Arquitecturas Modernas</h2>
+                <p class="text-2xl text-gray-300"><b>Data Lake, Lakehouse y Databricks</b></p>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-sky-400">
+                <h2 class="text-3xl font-bold text-sky-300 mb-6">El Fundamento: Data Lake</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Un repositorio que almacena una vasta cantidad de datos en su <b>formato nativo y crudo</b>.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li><b>Fortaleza:</b> Flexibilidad máxima.</li>
+                            <li><b>Debilidad:</b> Puede convertirse en un "pantano de datos" (Data Swamp).</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-datalake" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-sky-400">
+                <h2 class="text-3xl font-bold text-sky-300 mb-6">La Evolución: Lakehouse</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Combina la <b>flexibilidad</b> de un Data Lake con la <b>fiabilidad</b> de un Data Warehouse.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Añade transacciones ACID sobre el Data Lake.</li>
+                            <li>Permite BI y ML sobre los mismos datos.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-lakehouse" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+        <section>
+             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-sky-400">
+                <h2 class="text-3xl font-bold text-sky-300 mb-6">La Plataforma: Databricks</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-4">Es una <b>plataforma unificada</b> construida por los creadores de Apache Spark y Delta Lake. Es la implementación comercial más popular del concepto <b>Lakehouse</b>.</p>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
+                            <li>Provee un entorno colaborativo para Ingeniería de Datos, Data Science y ML.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram-databricks" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === MÓDULO CONCLUSIONES === -->
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-yellow-400">
+                <h2 class="text-5xl font-black text-yellow-300 mb-4 tracking-tight">Conclusiones</h2>
+                <p class="text-2xl text-gray-300"><b>Ideas Clave y Próximos Pasos</b></p>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-4xl font-bold text-yellow-300 mb-8 text-center">No existe una "Bala de Plata"</h2>
+                <p class="text-xl text-center text-gray-300 leading-relaxed max-w-3xl mx-auto">La arquitectura perfecta no existe. La mejor elección siempre <b>depende del problema específico</b> que intentas resolver, tu escala, tu equipo y tus objetivos de negocio.</p>
+                <div id="diagram-conclusion" class="bg-gray-900 p-4 rounded-lg mt-8 flex justify-center items-center diagram-container"></div>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+                <h2 class="text-4xl font-bold text-yellow-300 mb-8 text-center">Resumen del Panorama Arquitectónico</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-lg text-left">
+                        <thead class="text-yellow-300">
+                            <tr><th class="p-4">Arquitectura</th><th class="p-4">Fortaleza Principal</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t border-gray-700"><td class="p-4 font-bold">SQL / DWH</td><td class="p-4">Consistencia y BI tradicional.</td></tr>
+                            <tr class="border-t border-gray-700"><td class="p-4 font-bold">NoSQL</td><td class="p-4">Flexibilidad y escala masiva.</td></tr>
+                            <tr class="border-t border-gray-700"><td class="p-4 font-bold">Lakehouse</td><td class="p-4">Plataforma unificada para BI y ML.</td></tr>
+                            <tr class="border-t border-gray-700"><td class="p-4 font-bold">Data Mesh</td><td class="p-4">Escalabilidad organizacional.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-yellow-400">
+                <h2 class="text-5xl font-black text-yellow-300 mb-4 tracking-tight">¡Gracias!</h2>
+                <p class="text-2xl text-gray-300"><b>¿Preguntas?</b></p>
+            </div>
+        </section>
+    </main>
+    
+    <div class="fixed bottom-8 flex space-x-4 z-10">
+        <button id="prevBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+        <button id="nextBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Siguiente</button>
+    </div>
+    
+    <script>
+        function drawForceDirectedGraph(containerId, nodes, links, width = 400, height = 300) {
+            d3.select(containerId).select("svg").remove();
+            const svg = d3.select(containerId).append("svg")
+                .attr("width", "100%").attr("height", "100%")
+                .attr("viewBox", `0 0 ${width} ${height}`);
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.distance || 100))
+                .force("charge", d3.forceManyBody().strength(-250))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+            const link = svg.append("g").attr("stroke", "#9ca3af").attr("stroke-opacity", 0.6)
+                .selectAll("line").data(links).join("line").attr("stroke-width", 2);
+            const node = svg.append("g").selectAll("g").data(nodes).join("g");
+            node.append("circle").attr("r", d => d.radius || 25)
+                .attr("fill", d => d.color || "#3b82f6").attr("stroke", "#fff").attr("stroke-width", 1.5);
+            node.append("text").attr("text-anchor", "middle").attr("dy", "0.3em")
+                .attr("fill", "white").style("font-size", "12px").text(d => d.id);
+            simulation.on("tick", () => {
+                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        }
+
+        const kimballNodes = [ { id: "Hechos", color: "#f97316", radius: 30 }, { id: "Cliente" }, { id: "Producto" }, { id: "Tiempo" }, { id: "Tienda" } ];
+        const kimballLinks = [ { source: "Hechos", target: "Cliente" }, { source: "Hechos", target: "Producto" }, { source: "Hechos", target: "Tiempo" }, { source: "Hechos", target: "Tienda" } ];
+        const inmonNodes = [ { id: "DWH (3NF)", color: "#c026d3", radius: 35 }, { id: "DM Ventas" }, { id: "DM Marketing" }, { id: "Reporte" }, { id: "Análisis" } ];
+        const inmonLinks = [ { source: "DWH (3NF)", target: "DM Ventas" }, { source: "DWH (3NF)", target: "DM Marketing" }, { source: "DM Ventas", target: "Reporte" }, { source: "DM Marketing", target: "Análisis" } ];
+        const dataVaultNodes = [ { id: "Hub Cliente", color: "#16a34a" }, { id: "Hub Producto", color: "#16a34a" }, { id: "Link Venta", color: "#e11d48" }, { id: "Sat Cliente", color: "#f59e0b" }, { id: "Sat Producto", color: "#f59e0b" } ];
+        const dataVaultLinks = [ { source: "Hub Cliente", target: "Link Venta" }, { source: "Hub Producto", target: "Link Venta" }, { source: "Hub Cliente", target: "Sat Cliente" }, { source: "Hub Producto", target: "Sat Producto" } ];
+        const obtNodes = [ { id: "One Big Table", color: "#f97316", radius: 40 } ];
+        const obtLinks = [];
+        const datameshNodes = [ { id: "Ventas", color: "#16a34a" }, { id: "Marketing", color: "#16a34a" }, { id: "Logística", color: "#16a34a" }, { id: "Consumidor", radius: 30 } ];
+        const datameshLinks = [ { source: "Ventas", target: "Consumidor" }, { source: "Marketing", target: "Consumidor" }, { source: "Logística", target: "Consumidor" } ];
+        const nosqlIntroNodes = [ { id: "NoSQL", radius: 40, color: "#5eead4" }, { id: "Documental" }, { id: "Clave-Valor" }, { id: "Columnar" }, { id: "Grafo" } ];
+        const nosqlIntroLinks = [ { source: "NoSQL", target: "Documental" }, { source: "NoSQL", target: "Clave-Valor" }, { source: "NoSQL", target: "Columnar" }, { source: "NoSQL", target: "Grafo" } ];
+        const documentalNodes = [ { id: "Colección", radius: 35, color: "#2dd4bf" }, { id: "Doc 1", radius: 20 }, { id: "Doc 2", radius: 20 } ];
+        const documentalLinks = [ { source: "Colección", target: "Doc 1" }, { source: "Colección", target: "Doc 2" } ];
+        const keyValueNodes = [ { id: "Clave:user:1", radius: 20 }, { id: "Valor:{...}", radius: 30 }, { id: "Clave:sess:X", radius: 20 }, { id: "Valor:{...}", radius: 30, id_unique: "v2" } ];
+        const keyValueLinks = [ { source: "Clave:user:1", target: "Valor:{...}" }, { source: "Clave:sess:X", target: "Valor:{...}" } ];
+        const columnarNodes = [ { id: "Fila 1", radius: 20 }, { id: "Nombre:Ana", radius: 25 }, { id: "Ciudad:Lima", radius: 25 }, { id: "Fila 2", radius: 20 }, { id: "Nombre:Juan", radius: 25, id_unique: "n2" }, { id: "Ciudad:Bogotá", radius: 25, id_unique: "c2" } ];
+        const columnarLinks = [ { source: "Fila 1", target: "Nombre:Ana" }, { source: "Fila 1", target: "Ciudad:Lima" }, { source: "Fila 2", target: "Nombre:Juan" }, { source: "Fila 2", target: "Ciudad:Bogotá" } ];
+        const graphNodes = [ { id: "Ana", color: "#0d9488" }, { id: "Juan", color: "#0d9488" }, { id: "ProductoA", color: "#f59e0b" }, { id: "ProductoB", color: "#f59e0b" }, { id: "Bogotá", color: "#16a34a" } ];
+        const graphLinks = [ { source: "Ana", target: "Juan", distance: 120 }, { source: "Juan", target: "ProductoA" }, { source: "Ana", target: "ProductoB" }, { source: "Juan", target: "Bogotá" } ];
+        const datalakeNodes = [ { id: "Data Lake", radius: 40 }, { id: "Archivos" }, { id: "Tablas" }, { id: "Logs" }, { id: "Imágenes" } ];
+        const datalakeLinks = [ { source: "Data Lake", target: "Archivos" }, { source: "Data Lake", target: "Tablas" }, { source: "Data Lake", target: "Logs" }, { source: "Data Lake", target: "Imágenes" } ];
+        const lakehouseNodes = [ { id: "Lakehouse", radius: 40 }, { id: "Data Lake", radius: 30, color: "#0891b2" }, { id: "Delta Lake", radius: 30, color: "#f59e0b" }, { id: "BI / ML", radius: 25 } ];
+        const lakehouseLinks = [ { source: "Lakehouse", target: "Data Lake" }, { source: "Lakehouse", target: "Delta Lake" }, { source: "Lakehouse", target: "BI / ML" } ];
+        const databricksNodes = [ { id: "Databricks", radius: 45 }, { id: "Apache Spark", color: "#f97316" }, { id: "Delta Lake", color: "#f59e0b" }, { id: "MLflow", color: "#16a34a" }, { id: "Cloud", color: "#3b82f6" } ];
+        const databricksLinks = [ { source: "Databricks", target: "Apache Spark" }, { source: "Databricks", target: "Delta Lake" }, { source: "Databricks", target: "MLflow" }, { source: "Databricks", target: "Cloud" } ];
+        const conclusionNodes = [ { id: "Problema", radius: 40, color: "#e11d48" }, { id: "SQL", color: "#c026d3" }, { id: "NoSQL", color: "#0d9488" }, { id: "Lakehouse", color: "#0ea5e9" } ];
+        const conclusionLinks = [ { source: "Problema", target: "SQL" }, { source: "Problema", target: "NoSQL" }, { source: "Problema", target: "Lakehouse" } ];
+
+        const slides = document.querySelectorAll('main > section'); 
+        let currentSlide = 0;
+        const prevBtn = document.getElementById('prevBtn'); 
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function drawVisibleDiagram() {
+            const activeSlide = slides[currentSlide];
+            if (!activeSlide) return;
+            const container = activeSlide.querySelector('.diagram-container');
+            if (!container) return;
+            const containerId = `#${container.id}`;
+
+            switch(containerId) {
+                case '#diagram-kimball': drawForceDirectedGraph(containerId, kimballNodes, kimballLinks); break;
+                case '#diagram-inmon': drawForceDirectedGraph(containerId, inmonNodes, inmonLinks); break;
+                case '#diagram-datavault': drawForceDirectedGraph(containerId, dataVaultNodes, dataVaultLinks); break;
+                case '#diagram-obt': drawForceDirectedGraph(containerId, obtNodes, obtLinks, 300, 200); break;
+                case '#diagram-datamesh': drawForceDirectedGraph(containerId, datameshNodes, datameshLinks); break;
+                case '#diagram-nosql-intro': drawForceDirectedGraph(containerId, nosqlIntroNodes, nosqlIntroLinks); break;
+                case '#diagram-documental': drawForceDirectedGraph(containerId, documentalNodes, documentalLinks); break;
+                case '#diagram-keyvalue': drawForceDirectedGraph(containerId, keyValueNodes, keyValueLinks, 400, 200); break;
+                case '#diagram-columnar': drawForceDirectedGraph(containerId, columnarNodes, columnarLinks); break;
+                case '#diagram-graph': drawForceDirectedGraph(containerId, graphNodes, graphLinks); break;
+                case '#diagram-datalake': drawForceDirectedGraph(containerId, datalakeNodes, datalakeLinks); break;
+                case '#diagram-lakehouse': drawForceDirectedGraph(containerId, lakehouseNodes, lakehouseLinks); break;
+                case '#diagram-databricks': drawForceDirectedGraph(containerId, databricksNodes, databricksLinks); break;
+                case '#diagram-conclusion': drawForceDirectedGraph(containerId, conclusionNodes, conclusionLinks); break;
+            }
+        }
+
+        function showSlide(index) { 
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index)); 
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            nextBtn.disabled = index === slides.length - 1;
+            nextBtn.classList.toggle('opacity-50', index === slides.length - 1);
+            drawVisibleDiagram();
+        }
+        
+        prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; showSlide(currentSlide); } });
+        nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; showSlide(currentSlide); } });
+        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextBtn.click(); else if (e.key === 'ArrowLeft') prevBtn.click(); });
+        
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
