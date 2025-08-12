@@ -3,171 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SQL Avanzado: Diseño y Arquitectura</title>
+    <title>Curso: Optimización de Consultas SQL y Pipelines de Datos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        section { display: none; animation: fadeIn 0.5s; }
-        section.active { display: block; }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: scale(0.98); } 
-            to { opacity: 1; transform: scale(1); } 
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; /* bg-slate-100 */
         }
-        .diagram-container { min-height: 300px; }
-        .card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
-    </style>
-</head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
-
-    <main class="w-full max-w-6xl mx-auto">
-        <!-- Slide 1: Título Principal -->
-        <section>
-            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl text-center border-t-4 border-cyan-400">
-                <h1 class="text-5xl font-black text-cyan-300 mb-4 tracking-tight">Diseño y Arquitectura de Datos</h1>
-                <p class="text-2xl text-gray-300"><b>Un Curso Avanzado de SQL y Modelado Moderno</b></p>
-            </div>
-        </section>
-
-        <!-- Slide 2: El Corazón de tus Aplicaciones -->
-        <section>
-            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
-                <h2 class="text-4xl font-bold text-cyan-300 mb-6 text-center">El Corazón de tus Aplicaciones</h2>
-                <p class="text-xl text-gray-300 leading-relaxed">Toda gran aplicación se apoya en una base de datos. Es el motor silencioso que guarda, protege y sirve la información.<br><br>Un motor <b class="text-red-400">mal diseñado</b> genera fricción: lentitud y errores. Un motor <b class="text-green-400">bien diseñado</b> es sinónimo de eficiencia y confianza.</p>
-            </div>
-        </section>
-
-        <!-- Slide 3: Nuestro Laboratorio: Databricks -->
-        <section>
-            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
-                <h2 class="text-3xl font-bold text-cyan-300 mb-6">Nuestro Laboratorio: ¿Por Qué Databricks?</h2>
-                <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <p class="text-lg text-gray-300 mb-4">Para explorar todas estas arquitecturas, necesitamos un entorno de trabajo versátil. Usaremos <b>Databricks</b> porque es una <b>plataforma unificada</b> que nos permite:</p>
-                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-400">
-                            <li>Simular un <b>Data Lake</b> sobre almacenamiento en la nube.</li>
-                            <li>Construir un <b>Lakehouse</b> usando su motor Delta Lake.</li>
-                            <li>Utilizar <b>Spark SQL y PySpark</b> para crear y transformar cualquier modelo de datos.</li>
-                            <li>Trabajar de forma colaborativa en un único entorno para ingeniería, ciencia de datos y análisis.</li>
-                        </ul>
-                    </div>
-                    <div id="diagram-databricks" class="bg-gray-900 p-4 rounded-lg flex justify-center items-center diagram-container"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 4: Agenda del Curso -->
-        <section>
-            <div class="bg-gray-800 p-12 rounded-2xl shadow-2xl border-t-4 border-cyan-400">
-                <h2 class="text-4xl font-bold text-cyan-300 mb-10 text-center">Agenda del Curso</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-                    <a href="arquitecturas.html" class="card bg-gray-700 p-6 rounded-lg border border-transparent hover:border-indigo-500 lg:col-span-3">
-                        <h2 class="text-2xl text-indigo-300"><b>1. Arquitecturas de Datos</b></h2>
-                        <p class="text-gray-400 mt-2">Un panorama de los modelos de diseño: SQL, NoSQL y el Lakehouse.</p>
-                    </a>
-                    <a href="normalizacion.html" class="card bg-gray-700 p-6 rounded-lg border border-transparent hover:border-emerald-500">
-                        <h2 class="text-2xl text-emerald-300"><b>2. Normalización</b></h2>
-                        <p class="text-gray-400 mt-2">La base del diseño transaccional (OLTP).</p>
-                    </a>
-                    <a href="llaves.html" class="card bg-gray-700 p-6 rounded-lg border border-transparent hover:border-yellow-500">
-                        <h2 class="text-2xl text-yellow-300"><b>3. Llaves</b></h2>
-                        <p class="text-gray-400 mt-2">Garantizando la integridad y las relaciones.</p>
-                    </a>
-                    <a href="indices.html" class="card bg-gray-700 p-6 rounded-lg border border-transparent hover:border-purple-500">
-                        <h2 class="text-2xl text-purple-300"><b>4. Índices</b></h2>
-                        <p class="text-gray-400 mt-2">El secreto para que tus consultas vuelen.</p>
-                    </a>
-                    <a href="diagramas_erd.html" class="card bg-gray-700 p-6 rounded-lg border border-transparent hover:border-pink-500">
-                        <h2 class="text-2xl text-pink-300"><b>5. Diagramas ERD</b></h2>
-                        <p class="text-gray-400 mt-2">Visualizando la estructura de datos.</p>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
-    
-    <div class="fixed bottom-8 flex space-x-4 z-10">
-        <button id="prevBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
-        <button id="nextBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">Siguiente</button>
-    </div>
-    
-    <script>
-        function drawForceDirectedGraph(containerId, nodes, links, width = 450, height = 300) {
-            d3.select(containerId).select("svg").remove();
-            const svg = d3.select(containerId).append("svg").attr("width", "100%").attr("height", "100%").attr("viewBox", `0 0 ${width} ${height}`);
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.distance || 120))
-                .force("charge", d3.forceManyBody().strength(-300))
-                .force("center", d3.forceCenter(width / 2, height / 2));
-            
-            const link = svg.append("g").selectAll("line").data(links).join("line")
-                .attr("stroke", "#9ca3af").attr("stroke-opacity", 0.8).attr("stroke-width", 2);
-
-            const node = svg.append("g").selectAll("g").data(nodes).join("g");
-            node.append("rect").attr("width", d => d.width || 120).attr("height", d => d.height || 60)
-                .attr("x", d => -(d.width || 120) / 2).attr("y", d => -(d.height || 60) / 2)
-                .attr("rx", 10).attr("ry", 10)
-                .attr("fill", d => d.color || "#0e7490");
-            
-            node.append("text").attr("text-anchor", "middle").attr("dy", "0.3em")
-                .attr("fill", "white").style("font-size", "14px").style("font-weight", "bold").text(d => d.id);
-            
-            simulation.on("tick", () => {
-                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
-                node.attr("transform", d => `translate(${d.x},${d.y})`);
-            });
+        .card { 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
         }
-
-        const databricksNodes = [
-            { id: "Databricks", color: "#0891b2", width: 140, height: 70 },
-            { id: "Data Engineering", color: "#059669" },
-            { id: "Data Science / ML", color: "#059669" },
-            { id: "BI / Analytics", color: "#059669" },
-            { id: "Cloud Storage", color: "#64748b", width: 140 }
-        ];
-        const databricksLinks = [
-            { source: "Databricks", target: "Data Engineering" },
-            { source: "Databricks", target: "Data Science / ML" },
-            { source: "Databricks", target: "BI / Analytics" },
-            { source: "Cloud Storage", target: "Databricks" }
-        ];
-
-        const slides = document.querySelectorAll('main > section'); 
-        let currentSlide = 0;
-        const prevBtn = document.getElementById('prevBtn'); 
-        const nextBtn = document.getElementById('nextBtn');
-        
-        function drawVisibleDiagram() {
-            const activeSlide = slides[currentSlide];
-            if (!activeSlide) return;
-            const container = activeSlide.querySelector('.diagram-container');
-            if (!container) return;
-            d3.select(container).select("svg").remove();
-            const containerId = `#${container.id}`;
-
-            if (container.id === 'diagram-databricks') {
-                drawForceDirectedGraph(containerId, databricksNodes, databricksLinks);
+        .card:hover { 
+            transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .section-title {
+            border-bottom: 3px solid #06b6d4; /* border-cyan-500 */
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        /* --- Learning Path Timeline Styles --- */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #cbd5e1; /* slate-300 */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #06b6d4; /* cyan-500 */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .left {
+            left: 0;
+        }
+        .right {
+            left: 50%;
+        }
+        .right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 768px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .left::after, .right::after {
+                left: 15px;
+            }
+            .right {
+                left: 0%;
             }
         }
+    </style>
+</head>
+<body class="text-slate-800 p-8">
 
-        function showSlide(index) { 
-            slides.forEach((slide, i) => slide.classList.toggle('active', i === index)); 
-            prevBtn.disabled = index === 0;
-            prevBtn.classList.toggle('opacity-50', index === 0);
-            nextBtn.disabled = index === slides.length - 1;
-            nextBtn.classList.toggle('opacity-50', index === slides.length - 1);
-            drawVisibleDiagram();
-        }
+    <main class="w-full max-w-7xl mx-auto">
+        <!-- SECCIÓN DE TÍTULO -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight">Optimización de Consultas SQL y Pipelines de Datos Eficientes</h1>
+            <p class="text-2xl text-slate-600">Un viaje desde los fundamentos del diseño hasta la implementación en la nube</p>
+        </div>
         
-        prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; showSlide(currentSlide); } });
-        nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; showSlide(currentSlide); } });
-        document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextBtn.click(); else if (e.key === 'ArrowLeft') prevBtn.click(); });
-        
-        showSlide(currentSlide);
-    </script>
+        <!-- SECCIÓN DE OBJETIVOS (REDiseñada) -->
+        <div class="bg-white p-10 rounded-2xl shadow-lg mb-16">
+            <h2 class="text-4xl font-bold text-slate-900 mb-4 section-title">Objetivos y Competencias</h2>
+            <p class="text-lg text-slate-600 mt-4 max-w-4xl">Este curso ha sido diseñado para dotar a los participantes de competencias intermedias en SQL, preparándolos para trabajar eficientemente en entornos distribuidos como Databricks y enfrentar los desafíos críticos en la optimización y la implementación de arquitecturas de datos escalables.</p>
+            <div class="grid md:grid-cols-2 gap-12 items-center mt-10">
+                <div id="diagram-objectives" class="w-full min-h-[350px]"></div>
+                <div>
+                    <h3 class="text-2xl font-bold text-cyan-600 mb-6">Al finalizar, los participantes podrán:</h3>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Optimizar y Refactorizar</h4>
+                                <p class="text-slate-600 mt-1">Aplicar técnicas avanzadas para reescribir y mejorar el rendimiento de consultas SQL ineficientes en casos de uso reales.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Construir Pipelines de Datos</h4>
+                                <p class="text-slate-600 mt-1">Guiar la construcción de un proyecto práctico de pipeline de datos, aplicando la arquitectura Medallion de principio a fin sobre Databricks.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <div class="flex-shrink-0 h-10 w-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center mr-4">
+                               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Promover el Pensamiento Crítico</h4>
+                                <p class="text-slate-600 mt-1">Analizar, proponer y justificar soluciones técnicas a problemas de datos complejos, demostrando un entendimiento profundo del "porqué" de cada decisión.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE FILOSOFÍA -->
+        <div class="bg-white p-10 rounded-2xl shadow-lg mb-16">
+            <h2 class="text-4xl font-bold text-slate-900 mb-8 section-title">Nuestra Filosofía de Aprendizaje</h2>
+            <p class="text-lg text-slate-700 max-w-4xl mx-auto text-center mb-10">No creemos en aprender comandos de memoria. Creemos en entender el <b>"porqué"</b> detrás de cada decisión. Este curso está diseñado como un camino lógico que construye conocimiento de forma incremental, desde los cimientos hasta las aplicaciones más complejas del mundo real.</p>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="bg-slate-50 p-6 rounded-lg">
+                    <div class="text-3xl mb-3">🏛️</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">1. Pensamiento Arquitectónico</h3>
+                    <p class="text-slate-600">Iniciamos con el panorama general. Entendemos los fundamentos del diseño relacional (Normalización, Llaves) y los comparamos con arquitecturas modernas (Lakehouse, NoSQL) para saber elegir la herramienta correcta para cada problema.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg">
+                    <div class="text-3xl mb-3">⚙️</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">2. Dominio Técnico Profundo</h3>
+                    <p class="text-slate-600">Profundizamos en el "cómo". No basta con que una consulta funcione; debe ser eficiente. Dominamos la sintaxis avanzada, la optimización, los índices y la interpretación de planes de ejecución para escribir código de alto rendimiento.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg">
+                    <div class="text-3xl mb-3">🚀</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">3. Aplicación Práctica en la Nube</h3>
+                    <p class="text-slate-600">Llevamos la teoría a la práctica. Aplicamos todo lo aprendido construyendo pipelines de datos de extremo a extremo en Databricks, desde la ingesta de datos crudos hasta la visualización, usando Spark SQL y PySpark.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN RUTA DE APRENDIZAJE -->
+        <div class="text-center mb-16">
+             <h2 class="text-4xl font-bold text-slate-900 mb-8 section-title">Ruta de Aprendizaje</h2>
+        </div>
+        <div class="timeline-container">
+            <!-- Módulo 1 -->
+            <div class="timeline-item left">
+                <a href="presentacion1.html" class="card bg-white p-6 rounded-lg border-l-8 border-cyan-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-cyan-600">1. Diseño Relacional</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Proponer mejoras a un esquema con fallos de normalización y llaves.</p>
+                </a>
+            </div>
+
+            <!-- Módulo 2 -->
+            <div class="timeline-item right">
+                <a href="presentacion2.html" class="card bg-white p-6 rounded-lg border-l-8 border-emerald-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-emerald-600">2. Sintaxis SQL Avanzada</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Refactorizar una consulta antigua usando JOINs modernos y funciones de ventana.</p>
+                </a>
+            </div>
+
+            <!-- Módulo 3 -->
+            <div class="timeline-item left">
+                <a href="presentacion3.html" class="card bg-white p-6 rounded-lg border-l-8 border-purple-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-purple-600">3. Planes de Ejecución</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Interpretar un plan de ejecución en Databricks para identificar cuellos de botella.</p>
+                </a>
+            </div>
+
+            <!-- Módulo 4 -->
+            <div class="timeline-item right">
+                <a href="presentacion4.html" class="card bg-white p-6 rounded-lg border-l-8 border-amber-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-amber-600">4. Optimización Avanzada</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Re-escribir una consulta lenta usando CTEs y verificar la mejora en su rendimiento.</p>
+                </a>
+            </div>
+            
+            <!-- Módulo 5 -->
+            <div class="timeline-item left">
+                 <a href="presentacion5.html" class="card bg-white p-6 rounded-lg border-l-8 border-sky-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-sky-600">5. Arquitectura Lakehouse</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Diseñar las tablas para las capas Plata y Oro a partir de datos crudos (Bronce).</p>
+                </a>
+            </div>
+
+            <!-- Módulo 6 -->
+            <div class="timeline-item right">
+                 <a href="presentacion6.html" class="card bg-white p-6 rounded-lg border-l-8 border-rose-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-rose-600">6. Taller de Pipelines</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Escribir los scripts en Spark SQL para implementar un pipeline de Bronce a Oro.</p>
+                </a>
+            </div>
+
+            <!-- Módulo 7 -->
+            <div class="timeline-item left">
+                 <a href="presentacion7.html" class="card bg-white p-6 rounded-lg border-l-8 border-indigo-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-indigo-600">7. Más Allá de lo Relacional</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Redactar un análisis para justificar la elección entre SQL y NoSQL (Cosmos DB).</p>
+                </a>
+            </div>
+
+            <!-- Módulo 8 -->
+            <div class="timeline-item right">
+                 <a href="presentacion8.html" class="card bg-white p-6 rounded-lg border-l-8 border-lime-500 shadow-md block">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-lime-600">8. PySpark y Visualización</h2>
+                        <span class="font-bold text-slate-500">4 Horas</span>
+                    </div>
+                    <p class="text-slate-600"><b>Taller:</b> Replicar una consulta SQL usando PySpark y crear un dashboard en Databricks.</p>
+                </a>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
